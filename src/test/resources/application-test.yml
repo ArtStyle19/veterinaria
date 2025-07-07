@@ -1,0 +1,14 @@
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:vet_test;MODE=PostgreSQL
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+#  jpa:
+#    hibernate:
+#      ddl-auto: none        # valida contra el esquema H2
+##  ai.enabled: false          # ← desactiva Spring AI en los tests
+#  flyway:
+#    enabled: false          # no necesitas migrar en tests unitarios
+#  ai:
+#    enabled: false

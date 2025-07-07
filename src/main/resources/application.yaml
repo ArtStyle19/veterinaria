@@ -1,0 +1,17 @@
+spring:
+  datasource:
+#    url: jdbc:postgresql://localhost:5432/vet_central
+    url: jdbc:postgresql://localhost:5432/vet_central?stringtype=unspecified
+    username: vet_admin
+    password: 41818
+  jpa:
+    hibernate:
+      ddl-auto: validate   # Flyway will manage schema
+    properties:
+      hibernate.format_sql: true
+  flyway:
+    baseline-on-migrate: true
+  security:
+    jwt:
+      secret: "MWYyZDFlMmU2N2RmZTY3MGU4OTViNGEzYzQ3N2Q0MTMwYjU1YzI4ZWUwOTk2YzFk"
+      expiration-minutes: 240
