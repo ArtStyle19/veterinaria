@@ -45,6 +45,7 @@ public class PetService {
         pet.setSpecies(r.species);
         pet.setBreed(r.breed);
         pet.setSex(SexEnum.valueOf(r.sex));
+        pet.setStatus(PetStatusEnum.valueOf(r.status));
         pet.setBirthdate(r.birthdate);
 
         // ✅ Establecer clínica por defecto si viene null
@@ -67,6 +68,7 @@ public class PetService {
         pet.setSpecies(r.species);
         pet.setBreed(r.breed);
         pet.setSex(SexEnum.valueOf(r.sex));
+        pet.setStatus(PetStatusEnum.valueOf(r.status));
         pet.setBirthdate(r.birthdate);
         pet.setHomeClinicId(vet.getClinic().getId());
         pet.setOwnerName(r.ownerName);
@@ -139,13 +141,6 @@ public class PetService {
                 petClinics.save(pc);
             }
 
-//            PetHistoricalRecord record = histories.findByPet(pet)
-//                    .orElseThrow(() -> new RuntimeException("No historical record found for pet"));
-
-            // Grant WRITE access to historical record
-//            PetHistoricalRecord record = histories.findByPetId(pet.getId())
-//                    .orElseThrow(() -> new RuntimeException("No historical record found for pet"));
-
             PetHistoricalRecord record = histories.findByPet(pet).orElse(null);
 
             if (record == null) {
@@ -174,18 +169,6 @@ public class PetService {
     }
 
 
-//    public Pet importPet(ImportPetRequest r, User user) {
-//        Pet pet = pets.findByQrCodeToken(UUID.fromString(r.qrCodeToken))
-//                .orElseThrow(() -> new RuntimeException("Pet not found"));
-//
-//        if (pet.getOwner() != null) {
-//            throw new RuntimeException("Pet already linked to an owner");
-//        }
-//
-//        OwnerProfile owner = owners.findByUserId(user.getId()).orElseThrow();
-//        pet.setOwner(owner.getUser());
-//        return pets.save(pet);
-//    }
 
     @Transactional
     public void createAppointment(Long recordId, CreateAppointmentRequest req, User vetUser) {
@@ -274,29 +257,6 @@ public class PetService {
         return PetDetailDto.fromEntity(pet);
     }
 
-    // Public Qr
-
-//    public PublicPetDto getPublicPetByQrToken(UUID token) {
-//        Pet pet = pets.findByQrCodeToken(token)
-//                .orElseThrow(() -> new RuntimeException("Pet not found"));
-//
-//        Clinic clinic = clinics.findById(pet.getHomeClinicId()).orElse(null);
-//
-//        boolean isLost = pet.getStatus() == PetStatusEnum.LOST;
-//        String contact = null;
-//        String email = null;
-//
-//        if (isLost && pet.getOwner() != null) {
-//            OwnerProfile owner = owners.findByUserId(pet.getOwner().getId()).orElse(null);
-//            if (owner != null) {
-//                contact = owner.getCelNum();
-//                email = owner.getEmail();
-//            }
-//        }
-//
-//        return PublicPetDto.fromEntityLimited(pet, clinic, contact, email, isLost);
-//    }
-
 
     @Transactional
     public PublicPetDto getPublicPetByQrToken(UUID token) {
@@ -341,62 +301,105 @@ public class PetService {
     }
 
 
-
-    public List<HistoricalRecordDto> getFullHistoryForPet(Long petId) {
-        // Obtener todos los historiales de esa mascota (sin importar clínica)
-        List<PetHistoricalRecord> records = histories.findByPetId(petId);
-
-        return records.stream().map(record -> {
-            HistoricalRecordDto dto = new HistoricalRecordDto();
-            dto.setRecordId(record.getId());
-
-            // Obtener la clínica (si querés mostrarla)
-            HistoricalRecordClinic link = histClinics.findByRecordId(record.getId())
-                    .orElse(null);
-
-            if (link != null) {
-                dto.setClinic(ClinicDto.fromEntity(clinics.findById(link.getClinicId()).orElse(null)));
-            }
-
-            // Obtener las citas
-            List<Appointment> appointments = appointmentsRepo.findByRecordId(record.getId());
-
-            List<AppointmentSummaryDto> summaries = appointments.stream().map(app -> {
-                AppointmentSummaryDto summary = new AppointmentSummaryDto();
-                summary.setId(app.getId());
-                summary.setDate(app.getDate());
-                summary.setWeight(app.getWeight());
-                summary.setTemperature(app.getTemperature());
-                summary.setDiagnosis(app.getDiagnosis());
-                summary.setSymptoms(symptomRepo.findNamesByAppointmentId(app.getId()));
-                return summary;
-            }).toList();
-
-            dto.setAppointments(summaries);
-            return dto;
-        }).toList();
-    }
-
-//    @Transactional
-//    public PublicPetDto getPublicPetByQrToken(UUID token) {
-//        Pet pet = pets.findByQrCodeToken(token)
-//                .orElseThrow(() -> new RuntimeException("Pet not found"));
 //
-//        Clinic clinic = clinics.findById(pet.getHomeClinicId()).orElse(null);
+//    public List<HistoricalRecordDto> getFullHistoryForPet(Long petId) {
+//        // Obtener todos los historiales de esa mascota (sin importar clínica)
+//        List<PetHistoricalRecord> records = histories.findByPetId(petId);
 //
-//        String contact = null;
-//        String email = null;
+//        return records.stream().map(record -> {
+//            HistoricalRecordDto dto = new HistoricalRecordDto();
+//            dto.setRecordId(record.getId());
 //
-//        if (pet.getStatus() == PetStatusEnum.LOST && pet.getOwner() != null) {
-//            OwnerProfile owner = owners.findByUserId(pet.getOwner().getId()).orElse(null);
-//            if (owner != null) {
-//                contact = owner.getCelNum();
-//                email = owner.getEmail();
+////            // Obtener la clínica (si querés mostrarla)
+////            HistoricalRecordClinic link = histClinics.findByRecordId(record.getId())
+////                    .orElse(null);
+////
+////            if (link != null) {
+////                dto.setClinic(ClinicDto.fromEntity(clinics.findById(link.getClinicId()).orElse(null)));
+////            }
+//
+//            List<HistoricalRecordClinic> links = histClinics.findByRecordId(record.getId());
+//
+//            if (!links.isEmpty()) {
+//    /*  puedes:
+//        - tomar el primero
+//        - filtrar por homeClinicId
+//        - o devolver lista completa en el DTO
+//       aquí escogemos el primero para no romper el front  */
+//                Long clinicId = links.get(0).getClinicId();
+//                clinics.findById(clinicId).ifPresent(c ->
+//                        dto.setClinic(ClinicDto.fromEntity(c))
+//                );
 //            }
-//        }
 //
-//        return PublicPetDto.fromEntity(pet, clinic, contact, email);
+//
+//            // Obtener las citas
+//            List<Appointment> appointments = appointmentsRepo.findByRecordId(record.getId());
+//
+//            List<AppointmentSummaryDto> summaries = appointments.stream().map(app -> {
+//                AppointmentSummaryDto summary = new AppointmentSummaryDto();
+//                summary.setId(app.getId());
+//                summary.setDate(app.getDate());
+//                summary.setWeight(app.getWeight());
+//                summary.setTemperature(app.getTemperature());
+//                summary.setDiagnosis(app.getDiagnosis());
+//                summary.setSymptoms(symptomRepo.findNamesByAppointmentId(app.getId()));
+//                return summary;
+//            }).toList();
+//
+//            dto.setAppointments(summaries);
+//            return dto;
+//        }).toList();
 //    }
+
+public List<HistoricalRecordDto> getFullHistoryForPet(Long petId) {
+    List<PetHistoricalRecord> records = histories.findByPetId(petId);
+
+    return records.stream().map(record -> {
+        HistoricalRecordDto dto = new HistoricalRecordDto();
+        dto.setRecordId(record.getId());
+
+        /* 1. TODAS las clínicas con acceso */
+        List<ClinicDto> clinicDtos = histClinics.findByRecordId(record.getId()).stream()
+                .map(link -> clinics.findById(link.getClinicId())
+                        .map(ClinicDto::fromEntity)
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .toList();
+        dto.setClinics(clinicDtos);
+
+        /* 2. Citas + nombre de clínica */
+        List<Appointment> appointments = appointmentsRepo.findByRecordId(record.getId());
+
+        List<AppointmentSummaryDto> summaries = appointments.stream().map(app -> {
+            AppointmentSummaryDto summary = new AppointmentSummaryDto();
+            summary.setId(app.getId());
+            summary.setDate(app.getDate());
+            summary.setWeight(app.getWeight());
+            summary.setTemperature(app.getTemperature());
+            summary.setHeartRate(app.getHeartRate());
+            summary.setDescription(app.getDescription());
+            summary.setTreatments(app.getTreatments());
+            summary.setDiagnosis(app.getDiagnosis());
+            summary.setNotes(app.getNotes());
+            summary.setCreatedById(app.getCreatedBy().getId());
+            summary.setSymptoms(symptomRepo.findNamesByAppointmentId(app.getId()));
+
+            /* 🔎 clínica responsable = clínica del vet creador */
+            Long clinicId = vets.findClinicIdByUserId(app.getCreatedBy().getId())
+                    .orElse(null);
+            summary.setClinicId(clinicId);
+            if (clinicId != null) {
+                clinics.findById(clinicId)
+                        .ifPresent(c -> summary.setClinicName(c.getName()));
+            }
+            return summary;
+        }).toList();
+
+        dto.setAppointments(summaries);
+        return dto;
+    }).toList();
+}
 
 
 

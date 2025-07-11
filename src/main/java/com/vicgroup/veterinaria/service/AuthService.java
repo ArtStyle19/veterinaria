@@ -52,9 +52,7 @@ public class AuthService {
         return issue(saveNewUser(r.getUsername(), r.getPassword(), "ADMIN"));
     }
 
-//    public JwtResponse registerOwner(RegisterOwnerRequest r) {
-//        return issue(saveNewUser(r.getUsername(), r.getPassword(), "PET_OWNER"));
-//    }
+
 
     public JwtResponse registerOwner(RegisterOwnerRequest r) {
         User u = saveNewUser(r.getUsername(), r.getPassword(), "PET_OWNER");

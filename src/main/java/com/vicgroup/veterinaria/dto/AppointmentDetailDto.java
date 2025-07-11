@@ -20,4 +20,7 @@ public class AppointmentDetailDto {
     private String notes;
     private Long createdById;
     private List<String> symptoms;
+
+    private Long clinicId;
+    private String clinicName;
 }

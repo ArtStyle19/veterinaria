@@ -26,11 +26,10 @@ public class Pet extends BaseEntity {
     private String species;
     private String breed;
 
-//    @Enumerated(EnumType.STRING)
-////    @Column(columnDefinition = "sex_enum")
-//    private SexEnum sex;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "sex", columnDefinition = "sex_enum")
+
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private SexEnum sex;
 
@@ -43,7 +42,13 @@ public class Pet extends BaseEntity {
 
     private LocalDate birthdate;
 
+//    @Enumerated(EnumType.STRING)
+//    private PetStatusEnum status;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "pet_status_enum")
+
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private PetStatusEnum status;
 
     @Column(name = "home_clinic_id")
@@ -64,6 +69,7 @@ public class Pet extends BaseEntity {
 
     @Column(name = "edit_code", nullable = false)
     private String editCode;
+
 
 //    @Enumerated(EnumType.STRING)
 //    private VisibilityEnum visibility = VisibilityEnum.CLINIC_ONLY;

@@ -63,7 +63,7 @@ public class PetController {
     }
 
     @GetMapping("/{id}/history")
-    @PreAuthorize("hasRole('VET')") // o el rol que necesites
+    @PreAuthorize("hasAnyRole('VET', 'PET_OWNER')") // o el rol que necesites
     public ResponseEntity<List<HistoricalRecordDto>> getFullHistory(
             @PathVariable Long id
     ) {

@@ -5,9 +5,14 @@ import com.vicgroup.veterinaria.model.enums.VisibilityEnum;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class PetDetailDto {
+
+
+    private UUID qrCodeToken;              // ← NUEVO
+
     private Long id;
     private String name;
     private String species;
@@ -21,6 +26,11 @@ public class PetDetailDto {
 
     public static PetDetailDto fromEntity(com.vicgroup.veterinaria.model.Pet pet) {
         PetDetailDto dto = new PetDetailDto();
+
+
+        dto.setQrCodeToken(pet.getQrCodeToken());
+
+
         dto.setId(pet.getId());
         dto.setName(pet.getName());
         dto.setSpecies(pet.getSpecies());

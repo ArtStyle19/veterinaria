@@ -19,4 +19,11 @@ public class AppointmentSummaryDto {
     private String notes;
     private Long createdById;
     private List<String> symptoms;
+    private Long clinicId;
+    private String clinicName;
+//    public void setClinicId(Long clinicId) {
+//    }
+//
+//    public void setClinicName(String name) {
+//    }
 }

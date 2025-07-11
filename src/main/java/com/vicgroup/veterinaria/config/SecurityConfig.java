@@ -15,6 +15,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.vicgroup.veterinaria.config.JwtAuthFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -25,24 +27,47 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http
+                .cors(cors -> cors.configurationSource(request -> {
+                    var config = new org.springframework.web.cors.CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:5173")); // your frontend URL
+                    config.setAllowedMethods(List.of("*")); // GET, POST, etc.
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Rutas públicas
-                        .requestMatchers(
-                                "/api/auth/**",               // login, register, etc.
-//                                "/api/pets/public/**"         // acceso QR público
-                                "/api/public/**"   // ✅ Esto es lo correcto
-                        ).permitAll()
-
-                        // ✅ Todo lo demás requiere autenticación
+                        .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                // ✅ Filtro JWT personalizado antes del filtro de autenticación
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+//                        // ✅ Rutas públicas
+//                        .requestMatchers(
+//                                "/api/auth/**",               // login, register, etc.
+////                                "/api/pets/public/**"         // acceso QR público
+//                                "/api/public/**"   // ✅ Esto es lo correcto
+//                        ).permitAll()
+//
+//                        // ✅ Todo lo demás requiere autenticación
+//                        .anyRequest().authenticated()
+//                )
+//                // ✅ Filtro JWT personalizado antes del filtro de autenticación
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//
+//        return http.build();
+//    }
 
     @Bean
     public PasswordEncoder encoder() {

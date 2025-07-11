@@ -9,9 +9,13 @@ import com.vicgroup.veterinaria.model.enums.PetStatusEnum;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 public class PublicPetDto {
+
+    private UUID qrCodeToken;
+
     private String name;
     private String species;
     private String breed;
@@ -45,6 +49,11 @@ public class PublicPetDto {
 
     public static PublicPetDto fromEntity(Pet p, Clinic c, String ownerContact, String ownerEmail) {
         PublicPetDto dto = new PublicPetDto();
+
+
+        dto.setQrCodeToken(p.getQrCodeToken());
+
+
         dto.setName(p.getName());
         dto.setSpecies(p.getSpecies());
         dto.setBreed(p.getBreed());

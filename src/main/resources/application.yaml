@@ -15,3 +15,6 @@ spring:
     jwt:
       secret: "MWYyZDFlMmU2N2RmZTY3MGU4OTViNGEzYzQ3N2Q0MTMwYjU1YzI4ZWUwOTk2YzFk"
       expiration-minutes: 240
+  server:
+    address: 0.0.0.0
+    port: 8080

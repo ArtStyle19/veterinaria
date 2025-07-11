@@ -12,11 +12,7 @@ import org.springframework.web.bind.annotation.*;
 //import org.springframework.web.bind.annotation.; // Marks this class as a REST controller
 
 
-import jakarta.validation.Valid; // For enabling validation on request body objects (requires Spring Boot Validation dependency)
 
-import com.vicgroup.veterinaria.model.Pet;
-import com.vicgroup.veterinaria.model.User;
-import com.vicgroup.veterinaria.service.PetService;
 
 import java.util.List;
 import java.util.Map;
