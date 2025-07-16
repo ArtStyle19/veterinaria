@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional; // For transact
 
 import java.time.Duration; // For calculating JWT expiration time
 import java.time.Instant;  // For calculating JWT expiration time
-import java.util.Optional; // Used for handling Optional results from repositories
 
 // Import your custom model classes (entities)
 
@@ -30,9 +29,7 @@ import com.vicgroup.veterinaria.dto.FaceLoginRequest;
 import com.vicgroup.veterinaria.dto.JwtResponse; // Your custom JWT response DTO
 
 // Import your custom services
-import com.vicgroup.veterinaria.config.JwtService;
-import com.vicgroup.veterinaria.service.AuthService;
-import com.vicgroup.veterinaria.service.FaceVerifyClient;
+import com.vicgroup.veterinaria.config.security.JwtService;
 
 
 @Service @Transactional

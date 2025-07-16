@@ -1,16 +1,18 @@
 // src/main/java/com/vicgroup/veterinaria/config/DevDataSeeder.java
-package com.vicgroup.veterinaria.config;
+package com.vicgroup.veterinaria.config.dev;
 
 import com.github.javafaker.Faker;
+import com.vicgroup.veterinaria.core.enums.AccessLevelEnum;
+import com.vicgroup.veterinaria.core.enums.PetStatusEnum;
+import com.vicgroup.veterinaria.core.enums.SexEnum;
+import com.vicgroup.veterinaria.core.enums.VisibilityEnum;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.vicgroup.veterinaria.model.*;
-import com.vicgroup.veterinaria.model.enums.*;
 import com.vicgroup.veterinaria.repository.*;
 
 import java.math.BigDecimal;

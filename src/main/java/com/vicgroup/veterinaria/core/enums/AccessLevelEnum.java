@@ -1,4 +1,4 @@
-package com.vicgroup.veterinaria.model.enums;
+package com.vicgroup.veterinaria.core.enums;
 
 public enum AccessLevelEnum {
     READ, WRITE, FULL

@@ -8,10 +8,10 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;          -- gen_random_uuid()
 
 /* ---------- ENUM TYPES ----------------------------------------- */
 CREATE TYPE sex_enum            AS ENUM ('MALE','FEMALE','UNKNOWN');
-CREATE TYPE pet_status_enum     AS ENUM ('LOST', 'OK', 'SICK', 'DECEASED');
+CREATE TYPE pet_status_enum     AS ENUM ('LOST', 'OK', 'SICK', 'DECEASED'); -- IF DECEASED THEN NOT BEING ABLE TO ADD APPOS
 -- fix
-CREATE TYPE visibility_enum     AS ENUM ('PUBLIC','CLINIC_ONLY','PRIVATE');
-CREATE TYPE access_level_enum   AS ENUM ('READ','WRITE','FULL');
+CREATE TYPE visibility_enum     AS ENUM ('PUBLIC','CLINIC_ONLY','PRIVATE'); -- NOT BEING USED RN
+CREATE TYPE access_level_enum   AS ENUM ('READ','WRITE','FULL'); -- ADD NONE
 CREATE TYPE log_action_enum     AS ENUM ('view','request_write','granted','edit');
 
 /* ---------- CORE ROLES ----------------------------------------- */

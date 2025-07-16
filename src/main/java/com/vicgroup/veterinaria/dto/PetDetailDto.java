@@ -1,7 +1,7 @@
 package com.vicgroup.veterinaria.dto;
 
-import com.vicgroup.veterinaria.model.enums.SexEnum;
-import com.vicgroup.veterinaria.model.enums.VisibilityEnum;
+import com.vicgroup.veterinaria.core.enums.SexEnum;
+import com.vicgroup.veterinaria.core.enums.VisibilityEnum;
 import lombok.Data;
 
 import java.time.LocalDate;

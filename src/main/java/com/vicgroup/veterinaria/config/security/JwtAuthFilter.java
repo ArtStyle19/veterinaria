@@ -1,4 +1,4 @@
-package com.vicgroup.veterinaria.config;
+package com.vicgroup.veterinaria.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,7 +19,6 @@ import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import java.util.List;
 
-import com.vicgroup.veterinaria.config.JwtService;
 import com.vicgroup.veterinaria.repository.UserRepo;
 import com.vicgroup.veterinaria.model.User;
 

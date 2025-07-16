@@ -1,4 +1,4 @@
-package com.vicgroup.veterinaria.config;
+package com.vicgroup.veterinaria.config.security;
 
 import com.vicgroup.veterinaria.model.User;
 import io.jsonwebtoken.Claims;

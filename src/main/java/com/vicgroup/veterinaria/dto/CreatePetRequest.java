@@ -1,6 +1,5 @@
 package com.vicgroup.veterinaria.dto;
 
-import com.vicgroup.veterinaria.model.enums.PetStatusEnum;
 //import com.vicgroup.veterinaria.model.enums.SexEnum;
 
 import java.time.LocalDate;

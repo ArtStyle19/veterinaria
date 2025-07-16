@@ -1,4 +1,4 @@
-package com.vicgroup.veterinaria.util;
+package com.vicgroup.veterinaria.core.util;
 
 import jakarta.persistence.*;
 import lombok.Getter;

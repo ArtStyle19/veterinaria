@@ -1,6 +1,6 @@
 package com.vicgroup.veterinaria.model;
 
-import com.vicgroup.veterinaria.util.BaseEntity;
+import com.vicgroup.veterinaria.core.util.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -6,16 +6,16 @@ import java.util.UUID;
 
 import com.vicgroup.veterinaria.dto.*;
 import com.vicgroup.veterinaria.model.*;
-import com.vicgroup.veterinaria.model.enums.PetStatusEnum;
+import com.vicgroup.veterinaria.core.enums.PetStatusEnum;
 import com.vicgroup.veterinaria.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import com.vicgroup.veterinaria.model.enums.SexEnum;
-import com.vicgroup.veterinaria.model.enums.AccessLevelEnum;
+import com.vicgroup.veterinaria.core.enums.SexEnum;
+import com.vicgroup.veterinaria.core.enums.AccessLevelEnum;
 
-import com.vicgroup.veterinaria.model.enums.VisibilityEnum;
+import com.vicgroup.veterinaria.core.enums.VisibilityEnum;
 
 
 @Service
@@ -210,7 +210,6 @@ public class PetService {
                 appointmentSymptoms.save(link);
             }
         }
-
         // ✅ Optional: Audit log
         // accessLogRepo.save(new AccessLog(vetUser.getId(), recordId, LogActionEnum.EDIT));
     }

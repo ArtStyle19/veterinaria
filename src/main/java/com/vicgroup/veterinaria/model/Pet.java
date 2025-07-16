@@ -1,17 +1,16 @@
 package com.vicgroup.veterinaria.model;
 
-import com.vicgroup.veterinaria.model.enums.PetStatusEnum;
-import com.vicgroup.veterinaria.model.enums.SexEnum;
-import com.vicgroup.veterinaria.model.enums.VisibilityEnum;
+import com.vicgroup.veterinaria.core.enums.PetStatusEnum;
+import com.vicgroup.veterinaria.core.enums.SexEnum;
+import com.vicgroup.veterinaria.core.enums.VisibilityEnum;
 
-import com.vicgroup.veterinaria.util.BaseEntity;
+import com.vicgroup.veterinaria.core.util.BaseEntity;
 //import com.vladmihalcea.hibernate.type.basic.PostgreSQLEnumType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;

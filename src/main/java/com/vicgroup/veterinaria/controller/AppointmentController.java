@@ -28,8 +28,9 @@ public class AppointmentController {
 
     private final PetService petService;
     private final AppointmentService appointmentService;
-
-
+    // 1 Create Appo in a record
+    //
+    // http://localhost:8080/api/appointments/specific/1342
     @PostMapping("/{recordId}")
     @PreAuthorize("hasRole('VET')")
     public ResponseEntity<?> create(
@@ -44,6 +45,9 @@ public class AppointmentController {
         ));
     }
 
+    // 2 Get All Appos in a record
+    // Only If vet is in Intermediate table Historical Record Clinic
+    // Add Owner , cause now Only vet has access
     @GetMapping("/{recordId}")
     @PreAuthorize("hasRole('VET')")
     public ResponseEntity<List<AppointmentSummaryDto>> getAppointmentsByRecord(
@@ -54,8 +58,29 @@ public class AppointmentController {
         return ResponseEntity.ok(list);
     }
 
+
+
+    // 3
+    // Get Appo By Id but with nulls in clinic
+    // http://localhost:8080/api/appointments/specific/1342 number of cite
+    //    {
+    //        "id": 1342,
+    //            "date": "2025-07-15T16:05:15.568Z",
+    //            "weight": 123.00,
+    //            "temperature": 123.0,
+    //            "heartRate": 123,
+    //            "description": "Descripcion",
+    //            "treatments": "trat",
+    //            "diagnosis": "Diagnosis",
+    //            "notes": "Notas",
+    //            "createdById": 2,
+    //            "symptoms": [],
+    //        "clinicId": null,
+    //            "clinicName": null
+    //    }
+    //  Allow Owner to see that
     @GetMapping("/specific/{id}")
-    @PreAuthorize("hasRole('VET')")
+    @PreAuthorize("hasAnyRole('PET_OWNER', 'VET')")
     public ResponseEntity<AppointmentDetailDto> getAppointment(@PathVariable Long id,
                                                                @AuthenticationPrincipal User vetUser) {
         AppointmentDetailDto dto = appointmentService.getAppointmentById(id, vetUser);

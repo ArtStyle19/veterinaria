@@ -1,10 +1,10 @@
 package com.vicgroup.veterinaria.dto;
 
 import com.vicgroup.veterinaria.model.OwnerProfile;
-import com.vicgroup.veterinaria.model.enums.SexEnum;
+import com.vicgroup.veterinaria.core.enums.SexEnum;
 import com.vicgroup.veterinaria.model.Pet;
 import com.vicgroup.veterinaria.model.Clinic;
-import com.vicgroup.veterinaria.model.enums.PetStatusEnum;
+import com.vicgroup.veterinaria.core.enums.PetStatusEnum;
 
 import lombok.Data;
 

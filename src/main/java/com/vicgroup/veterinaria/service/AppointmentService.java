@@ -1,21 +1,12 @@
 package com.vicgroup.veterinaria.service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 import com.vicgroup.veterinaria.dto.*;
 import com.vicgroup.veterinaria.model.*;
-import com.vicgroup.veterinaria.model.enums.PetStatusEnum;
 import com.vicgroup.veterinaria.repository.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import com.vicgroup.veterinaria.model.enums.SexEnum;
-import com.vicgroup.veterinaria.model.enums.AccessLevelEnum;
-
-import com.vicgroup.veterinaria.model.enums.VisibilityEnum;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +19,7 @@ public class AppointmentService {
     private final SymptomRepo symptoms;
 
 
+    // Only For VetOwner RN
     public AppointmentDetailDto getAppointmentById(Long appointmentId, User vetUser) {
         VetProfile vet = vets.findByUserId(vetUser.getId()).orElseThrow();
 
