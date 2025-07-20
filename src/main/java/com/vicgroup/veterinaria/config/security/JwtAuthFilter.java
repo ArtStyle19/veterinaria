@@ -19,8 +19,8 @@ import io.jsonwebtoken.JwtException;
 import java.io.IOException;
 import java.util.List;
 
-import com.vicgroup.veterinaria.repository.UserRepo;
-import com.vicgroup.veterinaria.model.User;
+import com.vicgroup.veterinaria.modules.user.repository.UserRepo;
+import com.vicgroup.veterinaria.modules.user.model.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

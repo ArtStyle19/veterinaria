@@ -6,14 +6,35 @@ import com.vicgroup.veterinaria.core.enums.AccessLevelEnum;
 import com.vicgroup.veterinaria.core.enums.PetStatusEnum;
 import com.vicgroup.veterinaria.core.enums.SexEnum;
 import com.vicgroup.veterinaria.core.enums.VisibilityEnum;
+import com.vicgroup.veterinaria.modules.appointment.model.Appointment;
+import com.vicgroup.veterinaria.modules.appointment.model.AppointmentSymptom;
+import com.vicgroup.veterinaria.modules.appointment.repository.AppointmentRepo;
+import com.vicgroup.veterinaria.modules.appointment.repository.AppointmentSymptomRepo;
+import com.vicgroup.veterinaria.modules.clinic.model.Clinic;
+import com.vicgroup.veterinaria.modules.clinic.repository.ClinicRepo;
+import com.vicgroup.veterinaria.modules.pet.model.Pet;
+import com.vicgroup.veterinaria.modules.pet.model.PetClinic;
+import com.vicgroup.veterinaria.modules.pet.model.PetHistoricalRecord;
+import com.vicgroup.veterinaria.modules.pet.repository.PetClinicRepo;
+import com.vicgroup.veterinaria.modules.pet.repository.PetHistoricalRecordRepo;
+import com.vicgroup.veterinaria.modules.pet.repository.PetRepo;
+import com.vicgroup.veterinaria.modules.record.model.HistoricalRecordClinic;
+import com.vicgroup.veterinaria.modules.record.repository.HistoricalRecordClinicRepo;
+import com.vicgroup.veterinaria.modules.symptom.model.Symptom;
+import com.vicgroup.veterinaria.modules.symptom.repository.SymptomRepo;
+import com.vicgroup.veterinaria.modules.user.model.OwnerProfile;
+import com.vicgroup.veterinaria.modules.user.model.Role;
+import com.vicgroup.veterinaria.modules.user.model.User;
+import com.vicgroup.veterinaria.modules.user.model.VetProfile;
+import com.vicgroup.veterinaria.modules.user.repository.OwnerProfileRepo;
+import com.vicgroup.veterinaria.modules.user.repository.RoleRepo;
+import com.vicgroup.veterinaria.modules.user.repository.UserRepo;
+import com.vicgroup.veterinaria.modules.user.repository.VetProfileRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.vicgroup.veterinaria.model.*;
-import com.vicgroup.veterinaria.repository.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -39,9 +60,9 @@ public class DevDataSeeder implements CommandLineRunner {
     private final AppointmentSymptomRepo appSymRepo;
     private final PasswordEncoder encoder;
     private final PetClinicRepo petClinicRepo;   // ⬅️  nuevo
-    final int CLINIC_COUNT = 10;          // antes 4
-    final int VETS_PER_CLINIC = 40;       // antes 2
-    final int OWNER_COUNT = 50;          // antes 12
+    final int CLINIC_COUNT = 15;          // antes 4
+    final int VETS_PER_CLINIC = 4;       // antes 2
+    final int OWNER_COUNT = 100;          // antes 12
     // DevDataSeeder.java  – al nivel de constantes
     private static final List<String> ALL_SYMPTOMS = List.of(
             "Acute blindness", "Urine infection", "Red bumps", "Loss of Fur",
@@ -73,7 +94,7 @@ public class DevDataSeeder implements CommandLineRunner {
     public void run(String... args) {
 
         /* ---------- ROLES ---------- */
-        Map<String,Role> roles = Map.of(
+        Map<String, Role> roles = Map.of(
                 "ADMIN", ensureRole("ADMIN"),
                 "VET",   ensureRole("VET"),
                 "PET_OWNER", ensureRole("PET_OWNER")
@@ -138,7 +159,7 @@ public class DevDataSeeder implements CommandLineRunner {
         Random rnd = new Random();
 
         for (OwnerProfile owner : owners) {
-            int petsQty = rnd.nextInt(8) + 1;            // 1-2 mascotas
+            int petsQty = rnd.nextInt(8) + 1; // 1-8 mascotas
             for (int p = 0; p < petsQty; p++) {
 
                 Pet pet = new Pet();
@@ -147,44 +168,59 @@ public class DevDataSeeder implements CommandLineRunner {
                 pet.setBreed(faker.dog().breed());
                 pet.setSex(rnd.nextBoolean() ? SexEnum.MALE : SexEnum.FEMALE);
                 pet.setBirthdate(LocalDate.now().minusYears(rnd.nextInt(10) + 1));
-                pet.setStatus(petsQty % 3 == 1 ? PetStatusEnum.OK : PetStatusEnum. LOST);
+                pet.setStatus(petsQty % 3 == 1 ? PetStatusEnum.OK : PetStatusEnum.LOST);
                 pet.setOwner(owner.getUser());
-                pet.setHomeClinicId(clinics.get(rnd.nextInt(clinics.size())).getId());
                 pet.setVisibility(VisibilityEnum.CLINIC_ONLY);
                 pet.setEditCode(UUID.randomUUID().toString());
+
+                // Asignar varias clínicas
+                int clinicCount = rnd.nextInt(3) + 1; // 1–3 clínicas
+                Set<Long> assignedClinics = new HashSet<>();
+                while (assignedClinics.size() < clinicCount) {
+                    assignedClinics.add(clinics.get(rnd.nextInt(clinics.size())).getId());
+                }
+
+                Long homeClinicId = assignedClinics.iterator().next(); // usar una como principal
+                pet.setHomeClinicId(homeClinicId);
                 pet = petRepo.save(pet);
 
-
-//                pet = petRepo.save(pet);
-
-                /* ➜ Añadir: link Pet-Clinic */
-                if (!petClinicRepo.existsByPetIdAndClinicId(pet.getId(), pet.getHomeClinicId())) {
-                    PetClinic pc = new PetClinic();
-                    pc.setPetId(pet.getId());
-                    pc.setClinicId(pet.getHomeClinicId());
-                    petClinicRepo.save(pc);
+                // Guardar relaciones pet-clinic
+                for (Long clinicId : assignedClinics) {
+                    if (!petClinicRepo.existsByPetIdAndClinicId(pet.getId(), clinicId)) {
+                        PetClinic pc = new PetClinic();
+                        pc.setPetId(pet.getId());
+                        pc.setClinicId(clinicId);
+                        petClinicRepo.save(pc);
+                    }
                 }
-                // historial
+
+                // Crear historial
                 PetHistoricalRecord record = new PetHistoricalRecord();
                 record.setPet(pet);
                 record.setCreatedBy(owner.getUser());
                 record = histRepo.save(record);
 
-                // acceso home-clinic
-                HistoricalRecordClinic hrc = new HistoricalRecordClinic();
-                hrc.setRecordId(record.getId());
-                hrc.setClinicId(pet.getHomeClinicId());
-                hrc.setAccessLevel(AccessLevelEnum.WRITE);
-                hrcRepo.save(hrc);
+                // Dar acceso WRITE a todas las clínicas asignadas
+                for (Long clinicId : assignedClinics) {
+                    HistoricalRecordClinic hrc = new HistoricalRecordClinic();
+                    hrc.setRecordId(record.getId());
+                    hrc.setClinicId(clinicId);
+                    hrc.setAccessLevel(AccessLevelEnum.WRITE);
+                    hrcRepo.save(hrc);
+                }
 
-                // 1-3 citas
-                int apQty = rnd.nextInt(12) + 1;
+                // Crear citas
+                int apQty = rnd.nextInt(20) + 1;
                 for (int a = 0; a < apQty; a++) {
 
-                    Pet finalPet = pet;
+                    // Elegir un vet aleatorio de una de las clínicas asignadas
+                    List<Long> possibleClinics = new ArrayList<>(assignedClinics);
+                    Long vetClinicId = possibleClinics.get(rnd.nextInt(possibleClinics.size()));
+
                     VetProfile vet = vets.stream()
-                            .filter(v -> v.getClinic().getId().equals(finalPet.getHomeClinicId()))
-                            .findAny().orElse(vets.get(0));
+                            .filter(v -> v.getClinic().getId().equals(vetClinicId))
+                            .findAny()
+                            .orElse(vets.get(0));
 
                     Appointment ap = new Appointment();
                     ap.setRecordId(record.getId());
@@ -197,12 +233,10 @@ public class DevDataSeeder implements CommandLineRunner {
                     ap.setCreatedBy(vet.getUser());
                     ap = appRepo.save(ap);
 
-                    /* síntomas */
-// dentro del bucle de citas
-// dentro del bucle de citas  (reemplaza el bloque antiguo)
-                    int sCount = rnd.nextInt(5) + 1;                 // 1-5 síntomas distintos
-                    List<String> pool = new ArrayList<>(ALL_SYMPTOMS);   // ← copia mutable
-                    Collections.shuffle(pool, rnd);                     // ok ahora
+                    // Agregar síntomas
+                    int sCount = rnd.nextInt(5) + 1;
+                    List<String> pool = new ArrayList<>(ALL_SYMPTOMS);
+                    Collections.shuffle(pool, rnd);
                     for (int s = 0; s < sCount; s++) {
                         Symptom sym = symptomRepo.findByName(pool.get(s)).orElseThrow();
                         AppointmentSymptom link = new AppointmentSymptom();
@@ -210,11 +244,10 @@ public class DevDataSeeder implements CommandLineRunner {
                         link.setSymptomId(sym.getId());
                         appSymRepo.save(link);
                     }
-
-
                 }
             }
         }
+
 
         System.out.println("\n🌱  DEV DB seeded:");
         System.out.printf("   • Clinics ...... %d%n", clinicRepo.count());

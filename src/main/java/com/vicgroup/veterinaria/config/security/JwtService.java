@@ -1,6 +1,6 @@
 package com.vicgroup.veterinaria.config.security;
 
-import com.vicgroup.veterinaria.model.User;
+import com.vicgroup.veterinaria.modules.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

@@ -37,7 +37,32 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // 🟢 Públicos (login, register, QR, etc.)
+//                        .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
+
+                        // 🔒 ADMIN
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        // 🔒 VET
+                        .requestMatchers("/api/clinic/**", "/api/prediction/**").hasRole("VET")
+
+                        // 🔒 PET_OWNER (si tienes rutas específicas)
+                        .requestMatchers("/api/owner/**").hasRole("PET_OWNER")
+
+                        // 🔒 Lo demás requiere login
+//                        .anyRequest().authenticated()
+
+
                         .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
+
+                                .requestMatchers(
+                                        "/swagger-ui.html",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs/**",
+                                        "/v3/api-docs",
+                                        "/swagger-resources/**",
+                                        "/webjars/**"
+                                ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
